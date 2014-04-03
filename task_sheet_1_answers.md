@@ -4,4 +4,4 @@
 
 1. the GetPlayerName function is responsible for getting the players name at the end of the game
 2. you create a while loop that only accepts the name with only letters
-3. you would need a variable 
+3. you would need a variable that is for true or false that is a 
