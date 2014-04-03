@@ -133,15 +133,36 @@ def GetPlayerName():
   print()
   PlayerName = input('Please enter your name: ')
   print()
-  return PlayerName
+  if PlayerName == '':
+    print('please enter something for your name')
+  else:
+    count = 0
+    ValidName = False
+    while not ValidName:
+      for each in PlayerName:
+        check = ord(each)
+        if check > 65 and check < 91:
+          count+=1
+        elif check > 97 and check < 123:
+          count += 1
+        elif check > 48 and check < 57:
+          ValidName = False
+      if count == len(PlayerName) or count == len(PlayerName)-1:
+        ValidName = True
+        print('Valid')
+        return PlayerName
+      elif ValidName == False:
+        print('not Valid')
+        GetPlayerName()
+
+def AddToTableChoice():
+  PlayerChoice = input('do you want to add your score to the scoreboard')
+  PlayerChoice = PlayerChoice.lower()
+  return PlayerChoice
 
 def GetChoiceFromUser():
   Choice = input('Do you think the next card will be higher than the last card (enter y or n)? ')
   Choice = Choice.lower()
-  if Choice == 'yes':
-    Choice = 'y'
-  elif Choice == 'no':
-    Choice = 'n'
   return Choice
 
 def DisplayEndOfGameMessage(Score):
@@ -176,20 +197,24 @@ def DisplayRecentScores(RecentScores):
 
 def UpdateRecentScores(RecentScores, Score):
   PlayerName = GetPlayerName()
-  FoundSpace = False
-  Count = 1
-  while (not FoundSpace) and (Count <= NO_OF_RECENT_SCORES):
-    if RecentScores[Count].Name == '':
-      FoundSpace = True
-    else:
-      Count = Count + 1
-  if not FoundSpace:
-    for Count in range(1, NO_OF_RECENT_SCORES):
-      RecentScores[Count].Name = RecentScores[Count + 1].Name
-      RecentScores[Count].Score = RecentScores[Count + 1].Score
-    Count = NO_OF_RECENT_SCORES
-  RecentScores[Count].Name = PlayerName
-  RecentScores[Count].Score = Score
+  PlayerChoice = AddToTableChoice()
+  if PlayerChoice in ['yes','y']:
+    FoundSpace = False
+    Count = 1
+    while (not FoundSpace) and (Count <= NO_OF_RECENT_SCORES):
+      if RecentScores[Count].Name == '':
+        FoundSpace = True
+      else:
+        Count = Count + 1
+    if not FoundSpace:
+      for Count in range(1, NO_OF_RECENT_SCORES):
+        RecentScores[Count].Name = RecentScores[Count + 1].Name
+        RecentScores[Count].Score = RecentScores[Count + 1].Score
+      Count = NO_OF_RECENT_SCORES
+    RecentScores[Count].Name = PlayerName
+    RecentScores[Count].Score = Score
+  elif PlayerChoice in ['no','n']:
+    print('ok not adding to list')
 
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
@@ -201,7 +226,7 @@ def PlayGame(Deck, RecentScores):
   while (NoOfCardsTurnedOver < 52) and (not GameOver):
     GetCard(NextCard, Deck, NoOfCardsTurnedOver)
     Choice = ''
-    while Choice not in ['y','n']:
+    while Choice not in ['y','n','yes','no']:
       Choice = GetChoiceFromUser()
     DisplayCard(NextCard)
     NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
