@@ -5,6 +5,7 @@
 # version 2 edited 06/03/2014
 
 import random
+import datetime
 
 NO_OF_RECENT_SCORES = 3
 
@@ -17,6 +18,7 @@ class TRecentScore():
   def __init__(self):
     self.Name = ''
     self.Score = 0
+    self.Date = "0/0/0"
 
 Deck = [None]
 RecentScores = [None]
@@ -188,8 +190,9 @@ def DisplayRecentScores(RecentScores):
   print()
   print('Recent Scores: ')
   print()
+  print('{0:<10}{1:<10}{2:<10}'.format("Name", "Date", "Score"))
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
-    print(RecentScores[Count].Name, 'got a score of', RecentScores[Count].Score)
+    print("{0:<10}{1:<10}{2:<10}".format(RecentScores[Count].Name, RecentScores[Count].Date, RecentScores[Count].Score))
   print()
   print('Press the Enter key to return to the main menu')
   input()
@@ -201,6 +204,8 @@ def UpdateRecentScores(RecentScores, Score):
   if PlayerChoice in ['yes','y']:
     FoundSpace = False
     Count = 1
+    Date = datetime.datetime.now() 
+    The_Date = Date.strftime("%d/%m/%y")
     while (not FoundSpace) and (Count <= NO_OF_RECENT_SCORES):
       if RecentScores[Count].Name == '':
         FoundSpace = True
@@ -210,9 +215,11 @@ def UpdateRecentScores(RecentScores, Score):
       for Count in range(1, NO_OF_RECENT_SCORES):
         RecentScores[Count].Name = RecentScores[Count + 1].Name
         RecentScores[Count].Score = RecentScores[Count + 1].Score
+        RecentScores[Count].Date = RecentScores[Count + 1].Date
       Count = NO_OF_RECENT_SCORES
     RecentScores[Count].Name = PlayerName
     RecentScores[Count].Score = Score
+    RecentScores[Count].Date = The_Date
   elif PlayerChoice in ['no','n']:
     print('ok not adding to list')
 
