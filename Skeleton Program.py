@@ -9,6 +9,8 @@ import datetime
 
 NO_OF_RECENT_SCORES = 3
 
+Ace_High = False
+
 class TCard():
   def __init__(self):
     self.Suit = 0
@@ -252,6 +254,32 @@ def PlayGame(Deck, RecentScores):
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51)
 
+def Get_Option_Choice(Ace_High):
+  Display_Option_Menu(Ace_High)
+  choice = input('')
+  if choice == "1":
+    if Ace_High == False:
+      choices = input('change aces to high: ')
+    elif Ace_High == True:
+      choices = input('1. change aces to low: ')
+    if choices in ['yes', 'y', 'YES', 'Y'] and Ace_High == False:
+      Ace_High = True
+    elif choices in ['yes', 'y', 'YES', 'Y'] and Ace_High == True:
+      Ace_High = False
+    elif choices in ['no', 'n', 'NO', 'N'] and Ace_High == True or Ace_High == False:
+      print('fine leaving the aces how they are')
+    return Ace_high
+  
+  
+
+def Display_Option_Menu(Ace_High):
+  print('')
+  if Ace_High == False:
+    print('1. change aces to high: ')
+  elif Ace_High == True:
+    print('1. change aces to low: ')
+print('')
+    
 if __name__ == '__main__':
   for Count in range(1, 53):
     Deck.append(TCard())
@@ -273,4 +301,4 @@ if __name__ == '__main__':
     elif Choice == '4':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
-      choice = get_option_choice
+      Get_Option_Choice(Ace_High)
