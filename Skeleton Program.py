@@ -25,6 +25,9 @@ class TRecentScore():
 Deck = [None]
 RecentScores = [None]
 Choice = ''
+holding = ""
+holding1 = ""
+holding2 = ""
 
 def GetRank(RankNo):
   Rank = ''
@@ -98,7 +101,10 @@ def LoadDeck(Deck):
       break
     Deck[Count].Suit = int(LineFromFile)
     LineFromFile = CurrentFile.readline()
-    Deck[Count].Rank = int(LineFromFile)
+    if int(LineFromFile) == 'Ace' and Ace_High:
+      Deck[Count].Rank = 'king'
+    else:  
+      Deck[Count].Rank = int(LineFromFile)
     Count = Count + 1
  
 def ShuffleDeck(Deck):
@@ -120,13 +126,22 @@ def DisplayCard(ThisCard):
   print()
 
 def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
-  ThisCard.Rank = Deck[1].Rank
-  ThisCard.Suit = Deck[1].Suit
-  for Count in range(1, 52 - NoOfCardsTurnedOver):
-    Deck[Count].Rank = Deck[Count + 1].Rank
-    Deck[Count].Suit = Deck[Count + 1].Suit
-  Deck[52 - NoOfCardsTurnedOver].Suit = 0
-  Deck[52 - NoOfCardsTurnedOver].Rank = 0
+  if not Ace_High:
+    ThisCard.Rank = Deck[1].Rank
+    ThisCard.Suit = Deck[1].Suit
+    for Count in range(1, 52 - NoOfCardsTurnedOver):
+      Deck[Count].Rank = Deck[Count + 1].Rank
+      Deck[Count].Suit = Deck[Count + 1].Suit
+    Deck[52 - NoOfCardsTurnedOver].Suit = 0
+    Deck[52 - NoOfCardsTurnedOver].Rank = 0
+  elif Ace_High:
+    ThisCard.Rank = Deck[2].Rank
+    ThisCard.Suit = Deck[2].Suit
+    for Count in range(1, 52 - NoOfCardsTurnedOver):
+      Deck[Count].Rank = Deck[Count + 1].Rank
+      Deck[Count].Suit = Deck[Count + 1].Suit
+    Deck[52 - NoOfCardsTurnedOver].Suit = 0
+    Deck[52 - NoOfCardsTurnedOver].Rank = 0
 
 def IsNextCardHigher(LastCard, NextCard):
   Higher = False
@@ -225,6 +240,25 @@ def UpdateRecentScores(RecentScores, Score):
     RecentScores[Count].Date = The_Date
   elif PlayerChoice in ['no','n']:
     print('ok not adding to list')
+
+def SortScores(RecentScores):
+  for count in range(0,3):
+    if RecentScores[count].Score >= RecentScores[count+1].Score:
+      pass
+    elif RecentScores[count].Score <= RecentScores[count+1].Score:
+      holding = RecentScores[count].Score
+      RecentScores[count].Score == RecentScores[count+1].Score
+      RecentScores[count+1].Score = holding
+      holding = RecentScores[count].Name
+      RecentScores[count].Name == RecentScores[count+1].Name
+      RecentScores[count+1].Name = holding1
+      holding = RecentScores[count].Date
+      RecentScores[count].Date == RecentScores[count+1].Date
+      RecentScores[count+1].Date = holding2
+      
+      
+      
+    
 
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
