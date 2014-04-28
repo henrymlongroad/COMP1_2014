@@ -10,6 +10,7 @@ import datetime
 NO_OF_RECENT_SCORES = 3
 
 Ace_High = False
+Same_Card = False
 
 class TCard():
   def __init__(self):
@@ -145,8 +146,14 @@ def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
 
 def IsNextCardHigher(LastCard, NextCard):
   Higher = False
+  if NextCard.Rank == LastCard.Rank and Same_Card == False:
+    Higher = False
+  elif NextCard.Rank == LastCard.Rank and Same_Card == True:
+    Higher = True
+    
   if NextCard.Rank > LastCard.Rank:
     Higher = True
+
   return Higher
 
 def GetPlayerName():
@@ -256,14 +263,12 @@ def SortScores(RecentScores):
       RecentScores[count].Date == RecentScores[count+1].Date
       RecentScores[count+1].Date = holding2
       
-      
-      
-    
 
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
+  print(Ace_High)
   GetCard(LastCard, Deck, 0)
   DisplayCard(LastCard)
   NoOfCardsTurnedOver = 1
@@ -289,29 +294,36 @@ def PlayGame(Deck, RecentScores):
     UpdateRecentScores(RecentScores, 51)
 
 def Get_Option_Choice(Ace_High):
-  Display_Option_Menu(Ace_High)
   choice = input('')
   if choice == "1":
-    if Ace_High == False:
-      choices = input('change aces to high: ')
-    elif Ace_High == True:
-      choices = input('1. change aces to low: ')
-    if choices in ['yes', 'y', 'YES', 'Y'] and Ace_High == False:
+    choices = input('please enter your choice: ')
+    choices = choices.lower()
+    if choices in ['h'] and Ace_High == False:
       Ace_High = True
-    elif choices in ['yes', 'y', 'YES', 'Y'] and Ace_High == True:
+    elif choices in ['yes', 'y'] and Ace_High == True:
       Ace_High = False
-    elif choices in ['no', 'n', 'NO', 'N'] and Ace_High == True or Ace_High == False:
+    elif choices in ['no', 'n']:
       print('fine leaving the aces how they are')
-    return Ace_high
-  
-  
-
+  if choice == "2":
+    if Same_Card == False:
+      Choice = input("turn off same score GameOvers: ")
+    elif Same_Card == True:
+      Choice = input("turn on same score GameOvers: ")
+    Choice = Choice.lower()
+    if Choice in ['yes', 'y'] and Same_Card == False:
+      Same_Card = True
+    elif Choice in ['yes', 'y'] and Same_Card == True:
+      Same_Card = False
+    elif Choice in ['no','n']:
+      pass
+  return Ace_High
 def Display_Option_Menu(Ace_High):
   print('')
   if Ace_High == False:
     print('1. change aces to high: ')
   elif Ace_High == True:
     print('1. change aces to low: ')
+  print('2. Card of same score ends game')
 print('')
     
 if __name__ == '__main__':
@@ -335,4 +347,5 @@ if __name__ == '__main__':
     elif Choice == '4':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
-      Get_Option_Choice(Ace_High)
+      Display_Option_Menu(Ace_High)
+      Ace_high = Get_Option_Choice(Ace_High)
