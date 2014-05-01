@@ -134,7 +134,7 @@ def GetCard(ThisCard, Deck, NoOfCardsTurnedOver):
     Deck[52 - NoOfCardsTurnedOver].Rank = 0
 
     
-def IsNextCardHigher(LastCard, NextCard):
+def IsNextCardHigher(LastCard, NextCard, Choice):
   Higher = False
   if not Ace_High:
     if NextCard.Rank == LastCard.Rank and Same_Card == False:
@@ -183,12 +183,21 @@ def GetPlayerName():
         GetPlayerName()
 
 def AddToTableChoice():
-  PlayerChoice = input('do you want to add your score to the scoreboard')
+  Acceptable = False
+  PlayerChoice = input('do you want to add your score to the scoreboard: ')
   PlayerChoice = PlayerChoice.lower()
+  while not Acceptable:
+    if PlayerChoice not in ['y','n']:
+      print('that is not a valid input')
+      PlayerChoice = input('do you want to add your score to the scoreboard: ')
+    elif PlayerChoice in ['y','n']:
+      Acceptable = True
   return PlayerChoice
 
 def GetChoiceFromUser():
-  Choice = input('Do you think the next card will be higher than the last card (enter y or n)? ')
+  print('Do you think the next card will be higher than the last card(Y or N)?')
+  print('or do you wish to (S)ave: ',end='')
+  Choice = input('')
   Choice = Choice.lower()
   return Choice
 
@@ -224,9 +233,9 @@ def DisplayRecentScores(RecentScores):
   print()
 
 def UpdateRecentScores(RecentScores, Score):
-  PlayerName = GetPlayerName()
   PlayerChoice = AddToTableChoice()
   if PlayerChoice in ['yes','y']:
+    PlayerName = GetPlayerName()
     FoundSpace = False
     Count = 1
     Date = datetime.datetime.now() 
@@ -255,32 +264,36 @@ def SortScores(RecentScores):
       pass
     elif RecentScores[Count].Score <= RecentScores[Count+1].Score:
       holding = RecentScores[Count]
-      RecentScores[Count] == RecentScores[Count+1]
+      RecentScores[Count] = RecentScores[Count+1]
       RecentScores[Count+1] = holding
       
 def PlayGame(Deck, RecentScores):
   LastCard = TCard()
   NextCard = TCard()
   GameOver = False
-  print(Ace_High)
-  print(Same_Card)
+  print('Ace high is set to {0}'.format(Ace_High))
+  print('same_card is set to {0}'.format(Same_Card))
   GetCard(LastCard, Deck, 0)
   DisplayCard(LastCard)
   NoOfCardsTurnedOver = 1
   while (NoOfCardsTurnedOver < 52) and (not GameOver):
     GetCard(NextCard, Deck, NoOfCardsTurnedOver)
     Choice = ''
-    while Choice not in ['y','n','yes','no']:
+    while Choice not in ['y','n','yes','no','save','s']:
       Choice = GetChoiceFromUser()
-    DisplayCard(NextCard)
-    NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
-    Higher = IsNextCardHigher(LastCard, NextCard)
-    if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
-      DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
-      LastCard.Rank = NextCard.Rank
-      LastCard.Suit = NextCard.Suit
-    else:
-      GameOver = True
+    if Choice in ['y','n','yes','no']:
+      DisplayCard(NextCard)
+      NoOfCardsTurnedOver = NoOfCardsTurnedOver + 1
+      Higher = IsNextCardHigher(LastCard, NextCard, Choice)
+      if (Higher and Choice == 'y') or (not Higher and Choice == 'n'):
+        DisplayCorrectGuessMessage(NoOfCardsTurnedOver - 1)
+        LastCard.Rank = NextCard.Rank
+        LastCard.Suit = NextCard.Suit
+      else:
+        GameOver = True
+    elif Choice in ['save','s']:
+      pass
+      
   if GameOver:
     DisplayEndOfGameMessage(NoOfCardsTurnedOver - 2)
     UpdateRecentScores(RecentScores, NoOfCardsTurnedOver - 2)
@@ -288,7 +301,7 @@ def PlayGame(Deck, RecentScores):
     DisplayEndOfGameMessage(51)
     UpdateRecentScores(RecentScores, 51)
 
-def Get_Option_Choice():
+def Get_Option_Choice(Ace_High, Same_Card):
   choice = input('')
   if choice == "1":
     choices = input('please enter your choice: ')
@@ -302,21 +315,24 @@ def Get_Option_Choice():
   if choice == "2":
     Choice = input('please enter your choice')
     Choice = Choice.lower()
-    if Choice in ['yes', 'y'] and Same_Card == False:
+    if Choice in ['yes', 'y']:
       Same_Card = True
-    elif Choice in ['yes', 'y'] and Same_Card == True:
+    elif Choice in ['yes', 'y']:
       Same_Card = False
     elif Choice in ['no','n']:
      print('ok leaving alone')
   return Ace_High, Same_Card
 
-def Display_Option_Menu():
+def Display_Option_Menu(Ace_High, Same_Card):
   print('')
   print('1. change aces to High or Low: ')
   print('2. Card of same score ends game')
   print('')
-  Ace_High, Same_Card = Get_Option_Choice()
+  Ace_High, Same_Card = Get_Option_Choice(Ace_High, Same_Card)
   return Ace_High, Same_Card
+
+##  def Save_To_File(RecentScores):
+##    with open("skeleton_card_deck")
 
 if __name__ == '__main__':
   for Count in range(1, 53):
@@ -324,10 +340,15 @@ if __name__ == '__main__':
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     RecentScores.append(TRecentScore())
   Choice = ''
+##  try:
+##    Load_Recent_Scores()
+##  except IOError:
+##    Save_to_file(RecentScores)
   while Choice != 'q':
     DisplayMenu()
     Choice = GetMenuChoice()
     if Choice == '1':
+      ##  Check_For_Games()
       LoadDeck(Deck)
       ShuffleDeck(Deck)
       PlayGame(Deck, RecentScores)
@@ -339,6 +360,6 @@ if __name__ == '__main__':
     elif Choice == '4':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
-      Ace_High, Same_Card = Display_Option_Menu()
+      Ace_High, Same_Card = Display_Option_Menu(Ace_High, Same_Card)
 
       
