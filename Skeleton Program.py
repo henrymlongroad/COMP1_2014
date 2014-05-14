@@ -224,7 +224,7 @@ def DisplayRecentScores(RecentScores):
   print()
   print('Recent Scores: ')
   print()
-  print('{0:<10}{1:<10}{2:<10}'.format("Name", "Date", "Score"))
+  print('{0:<10}{1:<10}{2}'.format("Name", "Date", "Score"))
   for Count in range(1, NO_OF_RECENT_SCORES + 1):
     print("{0:<10}{1:<10}{2:<10}".format(RecentScores[Count].Name, RecentScores[Count].Date, RecentScores[Count].Score))
   print()
@@ -331,9 +331,17 @@ def Display_Option_Menu(Ace_High, Same_Card):
   Ace_High, Same_Card = Get_Option_Choice(Ace_High, Same_Card)
   return Ace_High, Same_Card
 
-##  def Save_To_File(RecentScores):
-##    with open("skeleton_card_deck")
-
+def Save_To_File(RecentScores):
+  with open("skeleton_card_deck.txt", mode = 'w', encoding = 'utf-8') as my_file:
+    for count in range (1, NO_OF_RECENT_SCORES):
+      if RecentScores[count].Date != None:
+        my_file.write("{0:<5}{1:<3}{2:<5}".format(RecentScores[count].Name, RecentScores[count].Score,RecentScores[count].Date )+"\n") 
+      else:
+        print()
+        print("score number {0} couldn't be saved".format(count))
+        print()
+    print('Game saved')
+    
 if __name__ == '__main__':
   for Count in range(1, 53):
     Deck.append(TCard())
@@ -361,5 +369,9 @@ if __name__ == '__main__':
       ResetRecentScores(RecentScores)
     elif Choice == '5':
       Ace_High, Same_Card = Display_Option_Menu(Ace_High, Same_Card)
+    elif Choice == '6':
+      Save_To_File(RecentScores)
+      
+      
 
       
